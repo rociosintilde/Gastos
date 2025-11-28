@@ -165,6 +165,82 @@ async def save_text_to_db(text: str, category: str, chat_id, amount: int = 0):
             await conn.close()
     except Exception as e:
         logger.error(f"Database error: {str(e)}")
+
+CATEGORIES = [
+    "Alcohol",
+    "Ocio y entretenimiento",
+    "Restaurante y bares",
+    "Salud y cuidado personal",
+    "Supermercado",
+    "Tonteras calle",
+    "Transporte",
+    "UBER delivery",
+    "Vivienda y servicios",
+]
+
+def levenshtein(a: str, b: str) -> int:
+    a, b = a.lower(), b.lower()
+    m, n = len(a), len(b)
+    if m > n:
+        a, b = b, a
+        m, n = n, m
+
+    prev = list(range(m + 1))
+    curr = [0] * (m + 1)
+
+    for j in range(1, n + 1):
+        curr[0] = j
+        for i in range(1, m + 1):
+            cost = 0 if a[i - 1] == b[j - 1] else 1
+            curr[i] = min(
+                prev[i] + 1,
+                curr[i - 1] + 1,
+                prev[i - 1] + cost
+            )
+        prev, curr = curr, prev
+    return prev[m]
+async def modify_last_purchase_cat(text: str, chat_id: int):
+    try:
+        conn = await asyncpg.connect(DATABASE_URL)
+        try:
+            lower_text = text.lower()
+
+            # 1. Check prefix matches
+            prefix_matches = [
+                c for c in CATEGORIES
+                if c.lower().startswith(lower_text)
+            ]
+
+            if len(prefix_matches) == 1:
+                best_cat = prefix_matches[0]
+            else:
+                # 2. Fallback: closest by Levenshtein distance
+                best_cat = min(CATEGORIES, key=lambda c: levenshtein(text, c))
+
+            await conn.execute(
+                """
+                UPDATE gastos_db
+                SET tipo_de_gasto = $1
+                WHERE id = (
+                    SELECT id
+                    FROM gastos_db
+                    ORDER BY timestamp DESC
+                    LIMIT 1
+                );
+                """,
+                best_cat,
+            )
+
+            # Send reply to Telegram
+            await send_telegram_message(chat_id, f"last entry modified to categoría {best_cat}")
+            
+        except Exception as e:
+            logger.error(f"Database error: {str(e)}")
+        finally:
+            await conn.close()
+    except Exception as e:
+        logger.error(f"Database error: {str(e)}")
+
         
 async def process_text_message(text: str, chat_id: int):
     text_new, amount = separar_texto_valor(text)
