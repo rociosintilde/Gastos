@@ -55,7 +55,6 @@ async def telegram_webhook(req: Request):
         logger.error(traceback.format_exc())
         return JSONResponse({"status": "error", "error": str(e)}, status_code=500)
 
-
 @app.get("/favicon.ico")
 async def faviconico():
     return Response(status_code=204)
