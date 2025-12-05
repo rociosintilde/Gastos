@@ -11,10 +11,6 @@ from functions_for_pred import process_text_message, format_summaries_as_table, 
 
 app = FastAPI()
 
-# Logging
-logging.basicConfig(
-    level=logging.INFO,HF_TOKEN     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
 logger = logging.getLogger(__name__)
 
 @app.post("/telegram_webhook")
