@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 import sys
 sys.path.append(os.path.dirname(__file__))
 from rescatar_valor_numerico import separar_texto_valor
-from cateogries import CATEGORIES
+from categories import CATEGORIES
 from rescatar_valor_numerico import levenshtein
 
 # Build paths relative to this script

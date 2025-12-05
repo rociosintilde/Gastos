@@ -1,5 +1,5 @@
 import re
-from cateogries import CATEGORIES 
+from categories import CATEGORIES 
 
 # --- utilidades ---
 def strip_punct(token: str) -> str:
