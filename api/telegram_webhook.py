@@ -13,8 +13,7 @@ app = FastAPI()
 
 # Logging
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO,HF_TOKEN     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
@@ -27,10 +26,7 @@ async def telegram_webhook(req: Request):
         if not message:
             return JSONResponse({"status": "no_message"})
 
-        if message.get("voice"):
-            return await process_voice_message(message)
-
-        elif message.get("text"):
+        if message.get("text"):
             
             splitted = message["text"].split()
         
