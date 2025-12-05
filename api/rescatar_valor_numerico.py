@@ -31,7 +31,11 @@ def levenshtein(a: str, b: str) -> int:
 # --- función principal que separa texto y valor ---
 def separar_texto_valor(texto: str):
 
-    nombre_gasto, cat, number = texto.split()
+
+    partes = texto.strip().split()
+    if len(partes) != 3:
+        raise ValueError(f"Formato inválido. Debe ser: nombre categoria monto, {partes}")
+    nombre_gasto, cat, number = partes
     
     number = float(number)
 
