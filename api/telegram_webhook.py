@@ -7,7 +7,7 @@ import sys
 
 
 sys.path.append(os.path.dirname(__file__))
-from functions_for_pred import process_voice_message, process_text_message, format_summaries_as_table, modify_last_purchase_cat
+from functions_for_pred import process_text_message, format_summaries_as_table, modify_last_purchase_cat
 
 app = FastAPI()
 
