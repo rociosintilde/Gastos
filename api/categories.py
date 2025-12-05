@@ -4,5 +4,7 @@ CATEGORIES = [
     "Gatos",
     "Farmacia",
     "picoteos",
+"escalada",
+"conciertos",
     
 ]
